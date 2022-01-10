@@ -11,6 +11,11 @@ import (
 	"github.com/syedomair/ex-paygate-lib/lib/tools/mockserver"
 )
 
+const (
+	ValidApproveKey   = "1D754E20948F3EB8589A9"
+	InValidApproveKey = "KLRJIUJ"
+)
+
 func TestVoidAction(t *testing.T) {
 	c := Controller{
 		Logger: logger.New("DEBUG", "TEST#", os.Stdout),
@@ -26,7 +31,7 @@ func TestVoidAction(t *testing.T) {
 	}
 
 	//Invalid approve_key
-	res, req := mockserver.MockTestServer(method, url, []byte(`{"approve_key":"1D754E20948F3EB8589A9"}`))
+	res, req := mockserver.MockTestServer(method, url, []byte(`{"approve_key":"`+InValidApproveKey+`"}`))
 	c.VoidAction(res, req)
 	response := new(TestResponse)
 	json.NewDecoder(res.Result().Body).Decode(response)
@@ -37,7 +42,7 @@ func TestVoidAction(t *testing.T) {
 	}
 
 	//Valid approve_key
-	res, req = mockserver.MockTestServer(method, url, []byte(`{"approve_key":"D754E20948F3EB8589A9"}`))
+	res, req = mockserver.MockTestServer(method, url, []byte(`{"approve_key":"`+ValidApproveKey+`"}`))
 	c.VoidAction(res, req)
 	response = new(TestResponse)
 	json.NewDecoder(res.Result().Body).Decode(response)
@@ -67,7 +72,7 @@ func (mdb *mockDB) VoidApprove(inputApproveKey map[string]interface{}) (*models.
 	if approveKeyValue, ok := inputApproveKey["approve_key"]; ok {
 		approveKey = approveKeyValue.(string)
 	}
-	if approveKey != "D754E20948F3EB8589A9" {
+	if approveKey != ValidApproveKey {
 		return nil, errors.New("invalid approve_key")
 	}
 	return &models.Approve{}, nil

@@ -32,7 +32,7 @@ func (p *postgresRepo) VoidApprove(inputApproveKey map[string]interface{}) (*mod
 	start := time.Now()
 
 	approveKey := ""
-	if approveKeyValue, ok := inputApproveKey["approve_key"]; ok {
+	if approveKeyValue, ok := inputApproveKey[ApproveKey]; ok {
 		approveKey = approveKeyValue.(string)
 	}
 

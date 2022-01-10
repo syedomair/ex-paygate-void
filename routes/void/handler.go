@@ -11,7 +11,10 @@ import (
 )
 
 const (
-	errorCodePrefix = "01"
+	errorCodePrefix       = "02"
+	ApproveKey            = "approve_key"
+	ApprovedAmountBalance = "approved_amount_balance"
+	Currency              = "currency"
 )
 
 // Controller Public
@@ -40,7 +43,7 @@ func (c *Controller) VoidAction(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
 	paramConf := make(map[string]models.ParamConf)
-	paramConf["approve_key"] = models.ParamConf{Required: true, Type: request.STRING, EmptyAllowed: false}
+	paramConf[ApproveKey] = models.ParamConf{Required: true, Type: request.STRING, EmptyAllowed: false}
 
 	paramMap, errCode, err := request.ValidateInputParameters(r, request.GetRequestID(r), c.Logger, paramConf, nil)
 	if err != nil {
@@ -54,8 +57,7 @@ func (c *Controller) VoidAction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
-	responseAction := map[string]string{"approved_amount_balance": approveObj.AmountBalance, "currency": approveObj.Currency}
+	responseAction := map[string]string{ApprovedAmountBalance: approveObj.AmountBalance, Currency: approveObj.Currency}
 	c.Logger.Debug(request.GetRequestID(r), "M:%v ts %+v", methodName, time.Since(start))
 	response.SuccessResponseHelper(w, responseAction, http.StatusOK)
 }
